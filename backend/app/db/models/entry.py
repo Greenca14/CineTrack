@@ -3,7 +3,10 @@ from datetime import datetime, date
 from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, SmallInteger, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
-from app.db.models.film import Film
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.db.models.film import Film
 
 class Entry(Base):
     __tablename__ = "entries"
@@ -36,4 +39,4 @@ class Entry(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
 
-    film: Mapped[Film] = relationship("Film", lazy="joined")
+    film: Mapped["Film"] = relationship("Film", lazy="joined")

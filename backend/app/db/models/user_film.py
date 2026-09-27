@@ -4,7 +4,10 @@ from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, String, T
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 from enum import StrEnum
-from app.db.models.film import Film
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.db.models.film import Film
 
 class FilmStatus(StrEnum):
     NOT_WATCHED = "not_watched"
@@ -19,7 +22,7 @@ class UserFilm(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "film_id", name="uq_user_film"),
         CheckConstraint(
-            "status IN ('planned', 'watching', 'watched', 'on_hold', 'dropped')",
+            "status IN ('not_watched', 'planned', 'watching', 'watched', 'on_hold', 'dropped')",
             name="ck_user_film_status",
         ),
     )
@@ -37,7 +40,7 @@ class UserFilm(Base):
         String(20), nullable=False, default=FilmStatus.NOT_WATCHED.value, index=True
     )
     is_favorite: Mapped[bool] = mapped_column(
-        Boolean, nullable=True, default=False
+        Boolean, nullable=False, default=False
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -46,4 +49,4 @@ class UserFilm(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
     
-    film: Mapped[Film] = relationship("Film", lazy="joined")
+    film: Mapped["Film"] = relationship("Film", lazy="joined")

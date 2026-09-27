@@ -1,8 +1,8 @@
 """create all tables
 
-Revision ID: aed7c2ace1e2
+Revision ID: a409ad457d59
 Revises: 
-Create Date: 2026-09-27 21:00:43.476337
+Create Date: 2026-09-27 21:11:39.200774
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'aed7c2ace1e2'
+revision: str = 'a409ad457d59'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -83,10 +83,10 @@ def upgrade() -> None:
     sa.Column('user_id', sa.String(length=36), nullable=False),
     sa.Column('film_id', sa.String(length=36), nullable=False),
     sa.Column('status', sa.String(length=20), nullable=False),
-    sa.Column('is_favorite', sa.Boolean(), nullable=True),
+    sa.Column('is_favorite', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-    sa.CheckConstraint("status IN ('planned', 'watching', 'watched', 'on_hold', 'dropped')", name='ck_user_film_status'),
+    sa.CheckConstraint("status IN ('not_watched', 'planned', 'watching', 'watched', 'on_hold', 'dropped')", name='ck_user_film_status'),
     sa.ForeignKeyConstraint(['film_id'], ['films.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
